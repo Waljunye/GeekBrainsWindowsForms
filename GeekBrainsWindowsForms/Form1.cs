@@ -13,18 +13,13 @@ namespace GeekBrainsWindowsForms
     
     public partial class Form1 : Form
     {
-        Stack<int> gameNumbers = new Stack<int>();
-        private int labelNumber = 0;
-        private int commandsCount = 0;
-        private bool gameStarted = false;
-        private int gameNumber;
-        private int countOfTurns;
+        Random random = new Random();
+        int winNumer;
+        bool gameEnd = false;
         public Form1()
         {
             InitializeComponent();
-            gameNumbers.Push(labelNumber);
-            UpdateNumber();
-            UpdateCountOfCommands();
+            winNumer = random.Next(0, 100);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -32,97 +27,45 @@ namespace GeekBrainsWindowsForms
 
         }
 
-        private void PlusOne_Click(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            labelNumber++;
-            commandsCount++;
-            gameNumbers.Push(labelNumber);
-            UpdateCountOfCommands();
-            UpdateNumber();
-            CheckGameNumber();
-        }
-
-        private void Multiply_Click(object sender, EventArgs e)
-        {
-            labelNumber *= 2;
-            commandsCount++;
-            gameNumbers.Push(labelNumber);
-            UpdateCountOfCommands();
-            UpdateNumber();
-            CheckGameNumber();
-        }
-        private void Win()
-        {
-            MessageBox.Show("Вы справились!", "Сообщение", MessageBoxButtons.OK);
-        }
-        private void CheckGameNumber()
-        {
-            if (gameStarted)
+            if (!gameEnd)
             {
-                if(labelNumber == gameNumber)
+                if (int.TryParse(textBox1.Text, out int guessNumber))
                 {
-                    Win();
+                    if (guessNumber == winNumer)
+                    {
+                        label1.Text = $"Вы угадали! Число - {winNumer}";
+                        gameEnd = true;
+                    }
+                    else if (guessNumber < winNumer)
+                    {
+                        label1.Text = "Нет же! Больше!";
+                    }
+                    else if (guessNumber > winNumer)
+                    {
+                        label1.Text = "Нет же! Меньше";
+                    }
                 }
             }
         }
-        private void Clear_Click(object sender, EventArgs e)
-        {
-            labelNumber = 0;
-            commandsCount = 0;
-            gameNumbers = new Stack<int>();
-            gameNumbers.Push(labelNumber);
-            UpdateCountOfCommands();
-            UpdateNumber();
 
-        }
-        private void UpdateNumber()
+        private void button1_Click(object sender, EventArgs e)
         {
-
-            label1.Text = gameNumbers.Peek().ToString();
-        }
-        private void UpdateCountOfCommands()
-        {
-            label2.Text = "Количество команд: " + commandsCount.ToString();
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void OnPlayButtonClick(object sender, EventArgs e)
-        {
-            labelNumber = 0;
-            commandsCount = 0;
-            gameNumbers = new Stack<int>();
-            UpdateCountOfCommands();
-            UpdateNumber();
-            gameStarted = true;
-            Random random = new Random();
-            countOfTurns = random.Next(5, 15);
-            gameNumber = 0;
-            for (int i = 0; i < countOfTurns; i++)
+            if(int.TryParse(textBox1.Text, out int guessNumber))
             {
-                if (i == 0) gameNumber++;
-                if (random.Next(1, 3) == 1)
+                if(guessNumber == winNumer)
                 {
-                    gameNumber++;
-                }
-                else
+                    label1.Text = $"Вы угадали! Число - {winNumer}";
+                }else if(guessNumber < winNumer)
                 {
-                    gameNumber *= 2;
+                    label1.Text = "Нет же! Больше!";
+                }else if(guessNumber > winNumer)
+                {
+                    label1.Text = "Нет же! Меньше";
                 }
             }
-            label3.Text = $"Число: {gameNumber}";
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            gameNumbers.Pop();
-            labelNumber = gameNumbers.Peek();
-            commandsCount--;
-            UpdateNumber();
-            UpdateCountOfCommands();
+            
         }
     }
 }
